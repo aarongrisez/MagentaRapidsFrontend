@@ -1,0 +1,55 @@
+version: '3'
+services:
+
+  api:
+    build:
+      context: .
+      dockerfile: api.Dockerfile
+    volumes:
+      - .:/src
+      - api-deps:/root/.cache/pypoetry/virtualenvs
+      - pre-commit-api:/pc/api/cache
+    environment:
+      PRE_COMMIT_HOME: /pc/api/cache
+    ports:
+      - 8000:8000
+    networks:
+      - backend
+
+  worker:
+    build:
+      context: .
+      dockerfile: api.Dockerfile
+    volumes:
+      - .:/src
+      - api-deps:/root/.cache/pypoetry/virtualenvs
+      - pre-commit-api:/pc/api/cache
+    environment:
+      PRE_COMMIT_HOME: /pc/api/cache
+    command: ["bash"]
+    networks:
+      - backend
+  
+  client:
+    build:
+      context: .
+      dockerfile: client.Dockerfile
+    volumes:
+      - ./src:/usr/src/app/src
+      - pre-commit-client:/pc/client/cache
+    environment:
+      PRE_COMMIT_HOME: /pc/client/cache     
+    ports:
+      - 3000:3000
+    stdin_open: true
+
+
+volumes:
+  pre-commit-api:
+  pre-commit-client:
+  api-deps:
+  client-deps:
+
+networks:
+  frontend:
+  backend:
