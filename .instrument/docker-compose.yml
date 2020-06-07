@@ -55,7 +55,7 @@ services:
       - '8080:8080' # web ui
       - '80:80'
     command: 
-      # - "--log.level=DEBUG"
+      - "--log.level=DEBUG"
       - "--api.insecure=true"
       - "--api.dashboard=true"
       - "--providers.consulcatalog=true"
@@ -63,6 +63,8 @@ services:
       - "--providers.consulcatalog.endpoint.datacenter=dc1"
       - "--providers.consulcatalog.cache=true"
       - "--providers.consulcatalog.exposedByDefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--accesslog=true"
     labels:
       - logspout.exclude 
 
@@ -117,7 +119,7 @@ services:
       GF_SECURITY_ADMIN_PASSWORD: 'instrument'
       GF_USERS_ALLOW_SIGN_UP: 'false'
       # registrator
-      SERVICE_TAGS: 'traefik.enable=true,traefik.docker.network=instrument_web,traefik.http.routers.router0.rule=PathPrefix(`/grafana`)'
+      SERVICE_TAGS: 'traefik.enable=true,traefik.docker.network=instrument_web,traefik.http.routers.router1.rule=PathPrefix(`/grafana`)'
 
   # tracing
   jaeger:
@@ -129,7 +131,7 @@ services:
       - logspout.exclude 
     environment: 
       # registrator
-      SERVICE_TAGS: 'traefik.enable=true,traefik.docker.network=instrument_web,traefik.http.routers.router0.rule=PathPrefix(`/jaeger`)'
+      SERVICE_TAGS: 'traefik.enable=true,traefik.docker.network=instrument_web,traefik.http.routers.router2.rule=PathPrefix(`/jaeger`)'
     ports:
       - '9411:9411'  # zipkin
       - '16686:16686' # web ui  

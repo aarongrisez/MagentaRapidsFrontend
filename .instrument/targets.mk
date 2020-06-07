@@ -10,7 +10,7 @@ DOCKER_REGISTRY ?= ''
 
 .PHONY: ult-instrument
 ult-instrument: clean install ult-instrument-infra
-	REGISTRY=$(DOCKER_REGISTRY) docker-compose -f "$(CURDIR)/docker-compose.yml" up
+	REGISTRY=$(DOCKER_REGISTRY) docker-compose -f "$(CURDIR)/docker-compose.yml" up -d
 
 .PHONY: ult-instrument-infra
 ult-instrument-infra:

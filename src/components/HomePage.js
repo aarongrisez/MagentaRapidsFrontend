@@ -7,7 +7,7 @@ export const HomePage = () => {
 
   return (
     <div>
-      <h1>Magenta Rapids</h1>
+      <h1>magenta rapids</h1>
       <SketchContainer />
       <Audio />
       <AudioSend />

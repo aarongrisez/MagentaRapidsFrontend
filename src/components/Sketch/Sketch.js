@@ -8,15 +8,15 @@ export const Sketch = (p) => {
       constructor(){
         this.x = p.random(0,p.width);
         this.y = p.random(0,p.height);
-        this.r = p.random(1,8);
-        this.xSpeed = p.random(-2,2);
-        this.ySpeed = p.random(-1,1.5);
+        this.r = p.random(3,14);
+        this.xSpeed = p.random(-0.3,0.3);
+        this.ySpeed = p.random(-0.3,0.35);
       }
     
     // creation of a particle.
       createParticle() {
         p.noStroke();
-        p.fill('rgba(200,169,169,0.5)');
+        p.fill('rgba(192,255,164,0.5)');
         p.circle(this.x,this.y,this.r);
       }
     
@@ -35,8 +35,8 @@ export const Sketch = (p) => {
       joinParticles(particles) {
         particles.forEach(element =>{
           let dis = p.dist(this.x,this.y,element.x,element.y);
-          if(dis<85) {
-            p.stroke('rgba(255,255,255,0.04)');
+          if(dis<175) {
+            p.stroke('rgba(224,251,212,0.3)');
             p.line(this.x,this.y,element.x,element.y);
           }
         });
@@ -50,13 +50,13 @@ export const Sketch = (p) => {
     canvas = p.createCanvas(window.innerWidth, window.innerHeight);
     canvas.position(0,0)
     canvas.style('z-index', '-1')
-    for(let i = 0;i<p.width/10;i++){
+    for(let i = 0;i<p.width/12;i++){
       particles.push(new Particle());
     }
   }
   
   p.draw = () => {
-    p.background('#825f9e');
+    p.background('#EFD4FB');
     for(let i = 0;i<particles.length;i++) {
       particles[i].createParticle();
       particles[i].moveParticle();

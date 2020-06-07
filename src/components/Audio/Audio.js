@@ -1,27 +1,27 @@
 import React, { useRef, useEffect, useState } from "react";
-import { AMSynth, PolySynth, Transport, Event } from 'tone';
+import { AMSynth, PolySynth, Transport, Master, Event } from 'tone';
 import useWebSocket from "react-use-websocket"
 
 export const Audio = () => {
-  const [channels, setChannels] = useState(2);
+  const [channels, setChannels] = useState(8);
   const [channelPoly, setChannelPoly] = useState(4);
-  const [socketUrl, setSocketUrl] = useState('ws://localhost:8000/ws');
-  const [debug, setDebug] = useState(true)
-  const [releaseDisabled, setReleaseDisabled] = useState(false)
+  const [socketUrl, setSocketUrl] = useState('ws://mr-dev-1227.aarongrisez.com/backend/ws');
+  const [active, setActive] = useState(false)
   const synths = useRef([]);
   const [events, setEvents] = useState([])
 
   const handleReceiveMessage = (message) => {
     const data = JSON.parse(message.data);
-    data.forEach((message, index) => {
-      events.push(new Event((time) => {
-        synths.current[message.channel].triggerAttackRelease(
-          message.note,
-          message.duration,
-        )
-      }).start(Transport.nextSubdivision(message.time)))
-      console.log(Transport.nextSubdivision(message.time));
-    });
+    if (active) {
+      data.forEach((message, index) => {
+        events.push(new Event((time) => {
+          synths.current[message.channel].triggerAttackRelease(
+            message.note,
+            message.duration,
+          )
+        }).start(Transport.nextSubdivision(message.time)))
+      });
+    }
   }
 
   useWebSocket(socketUrl, {
@@ -30,30 +30,26 @@ export const Audio = () => {
   });
 
   useEffect(() => {
-    Transport.start()
-    for (var i = 0; i < channels; i++) {
-      synths.current.push(new PolySynth(channelPoly, AMSynth).toMaster());
+    if (active) {
+      Master.mute = false;
+      Transport.start()
+      if (Array.isArray(synths) && synths.length) {}
+      else {
+        for (var i = 0; i < channels; i++) {
+          synths.current.push(new PolySynth(channelPoly, AMSynth).toMaster());
+        }
+      }
     }
-  }, []);
+    else {
+      Master.mute = true;
+    }
+  }, [channelPoly, channels, active]);
 
-  const handleReleaseAll = () => {
-    console.log("Releasing all pitches")
-    setReleaseDisabled(true);
-    events.forEach((event) => {
-      event.dispose();
-    })
-    synths.current.forEach((synth) => {
-      synth.releaseAll();
-    })
-  }
-
-  if (debug) {
-    return (
-      <button onClick={handleReleaseAll} disabled={releaseDisabled}>Release All</button>
-    )
-  }
-  else {
-    return null
-  }
+  return (
+    <div>
+      {active ? <p>sound is on</p> : <p>sound is off</p>}
+      <button onClick={() => setActive(!active)}>toggle sound</button>
+    </div>
+  )
 
 };

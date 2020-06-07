@@ -11,10 +11,11 @@ services:
       - pre-commit-api:/pc/api/cache
     environment:
       PRE_COMMIT_HOME: /pc/api/cache
+      SERVICE_TAGS: 'traefik.enable=true,traefik.port=80,traefik.docker.network=instrument_web,traefik.http.routers.router-api.rule=Host(`mr-dev-1227.aarongrisez.com`) && PathPrefix(`/backend`)'
     ports:
-      - 8000:8000
+      - 80
     networks:
-      - backend
+      - instrument_web
 
   worker:
     build:
@@ -26,9 +27,13 @@ services:
       - pre-commit-api:/pc/api/cache
     environment:
       PRE_COMMIT_HOME: /pc/api/cache
-    command: ["bash"]
+      SERVICE_TAGS: 'traefik.enable=true,traefik.port=80,traefik.docker.network=instrument_web,traefik.http.routers.router-worker.rule=Host(`mr-dev-1227.aarongrisez.com`) && PathPrefix(`/worker`)'
+    command: ["poetry", "run", "python", "worker.py"]
+    working_dir: /src/api/tasks
     networks:
-      - backend
+      - instrument_web
+    depends_on:
+      - api
   
   client:
     build:
@@ -39,10 +44,11 @@ services:
       - pre-commit-client:/pc/client/cache
     environment:
       PRE_COMMIT_HOME: /pc/client/cache     
-    ports:
-      - 3000:3000
+      SERVICE_TAGS: 'traefik.enable=true,traefik.port=80,traefik.docker.network=instrument_web,traefik.http.routers.router-client.rule=Host(`mr-dev-1227.aarongrisez.com`),traefik.http.routers.router-client.entrypoints=web'
+      PORT: 80
     stdin_open: true
-
+    networks:
+      - instrument_web
 
 volumes:
   pre-commit-api:
@@ -51,5 +57,5 @@ volumes:
   client-deps:
 
 networks:
-  frontend:
-  backend:
+  instrument_web:
+    external: true

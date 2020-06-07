@@ -3,7 +3,7 @@ import useWebSocket, { ReadyState } from "react-use-websocket"
 
 
 export const AudioSend = () => {
-  const [socketUrl, setSocketUrl] = useState('ws://localhost:8000/ws', { share: true });
+  const [socketUrl, setSocketUrl] = useState('ws://mr-dev-1227.aarongrisez.com/backend/ws', { share: true });
 
   const {
     sendJsonMessage,
@@ -14,13 +14,16 @@ export const AudioSend = () => {
   const handleClickSendMessage = useCallback(() =>
     sendJsonMessage(
       [{
-        "channel": 1,
-        "note": JSON.stringify(Math.floor(120 + Math.random() * Math.floor(2000))),
+        "channel": 5,
+        "note": [JSON.stringify(Math.floor(120 + Math.random() * Math.floor(2000)))],
         "duration": "2n",
         "time": "4n",
         "velocity": "1"
       }]
-  ), []);
+  ), [sendJsonMessage]);
+
+  const data = lastMessage ? JSON.parse(lastMessage.data) : ""
+  const pretty_json = JSON.stringify(data, null, 2) 
 
   return (
     <div>
@@ -28,10 +31,10 @@ export const AudioSend = () => {
         onClick={handleClickSendMessage}
         disabled={readyState !== ReadyState.OPEN}
       >
-        Click Me to send a note
+        send a note
       </button>
       <br />
-      {lastMessage ? <span>Last note: {lastMessage.data}</span> : null}
+      <div><pre>last note: {pretty_json}</pre></div>
     </div>
   );
 
