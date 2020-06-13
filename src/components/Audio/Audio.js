@@ -8,19 +8,19 @@ export const Audio = () => {
   const [socketUrl, setSocketUrl] = useState('ws://mr-dev-1227.aarongrisez.com/backend/ws');
   const [active, setActive] = useState(false)
   const synths = useRef([]);
-  const [events, setEvents] = useState([])
 
   const handleReceiveMessage = (message) => {
     const data = JSON.parse(message.data);
     if (active) {
       data.forEach((message, index) => {
-        events.push(new Event((time) => {
+        const event = new Event((time) => {
           synths.current[message.channel].triggerAttackRelease(
             message.note,
             message.duration,
           )
-        }).start(Transport.nextSubdivision(message.time)))
-      });
+        }).start(Transport.nextSubdivision(message.time));
+        console.log(event)
+      })
     }
   }
 

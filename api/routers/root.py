@@ -1,8 +1,9 @@
 from fastapi import WebSocket, APIRouter, Depends
 from starlette.websockets import WebSocketDisconnect
-from api.models.message import MessageList
+from api.models.event import SynthesizedEvent
 from api.managers.message import get_message_manager, MessageManager
 from api.config.settings import get_settings, Settings
+from typing import Any
 import logging
 
 router = APIRouter()
@@ -17,10 +18,10 @@ async def websocket_endpoint(websocket: WebSocket, notifier: MessageManager = De
             data = await websocket.receive_json()
             if data: 
                 logger.debug(f"Received data: {data}")
-                await notifier.push(MessageList.parse_obj(data)) 
+                await notifier.push(SynthesizedEvent.parse_obj(data)) 
     except WebSocketDisconnect:
         notifier.remove(websocket)
 
 @router.post("/backend/push/")
-async def push_to_connected_websockets(messages: MessageList, notifier: MessageManager = Depends(get_message_manager)):
-    await notifier.push(messages)
+async def push_to_connected_websockets(events: SynthesizedEvent, notifier: MessageManager = Depends(get_message_manager)):
+    await notifier.push(events)

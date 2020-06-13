@@ -1,45 +1,21 @@
-from fastapi import FastAPI, WebSocket
-from typing import List, Union, Any, Callable
 from functools import lru_cache
 import logging
-from api.models.message import Message, MessageList
+from typing import Union
+from fastapi import WebSocket
 from api.extensions.tracing import get_tracer
+from api.models.event import SynthesizedEvent
 from aiocache import cached
-from aiocache.serializers import PickleSerializer
+from .connection import WebSocketConnectionManager
 
 
 logger = logging.getLogger("api")
 
-class WebSocketConnectionManager:
+Message = SynthesizedEvent 
 
-    def __init__(self, connections: Union[List, None] = None):
-        if connections:
-            self.connections = connections
-        else:
-            self.connections = []
-    
-    def add_connection(self, connection: WebSocket) -> WebSocket:
-        self.connections.append(connection)
-        return connection
-        
-    def remove_connection(self, connection: WebSocket) -> WebSocket:
-        self.connections.remove(connection)
-        return connection
-    
-    async def apply_to_connections(self, function: Callable[...,Any]) -> None:
-        living_connections = []
-        while len(self.connections) > 0:
-            # Looping like this is necessary in case a disconnection is handled
-            # during await websocket.send_text(message)
-            websocket = self.connections.pop()
-            await function(websocket)
-            living_connections.append(websocket)
-        self.connections = living_connections
 
 class MessageManager:
 
     def __init__(self):
-        self.connections: List[WebSocket] = []
         self.generator = self.get_message_generator()
         self.connection_manager = get_websocket_connection_manager()
 
@@ -59,13 +35,13 @@ class MessageManager:
     def remove(self, websocket: WebSocket):
         self.connection_manager.remove_connection(websocket)
 
-    async def send(self, websocket: WebSocket, messages: MessageList):
-        await websocket.send_text(messages.json())
+    async def send(self, websocket: WebSocket, message: Message):
+        await websocket.send_json(message.json())
 
-    async def _notify(self, messages: MessageList):
+    async def _notify(self, message: Message):
         with get_tracer().start_active_span("message_manager._notify", finish_on_close=True) as scope:
             await self.connection_manager.apply_to_connections(
-                lambda ws: self.send(ws, messages)
+                lambda ws: self.send(ws, message)
             )
 
 @lru_cache()
