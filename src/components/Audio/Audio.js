@@ -5,21 +5,21 @@ import useWebSocket from "react-use-websocket"
 export const Audio = () => {
   const [channels, setChannels] = useState(8);
   const [channelPoly, setChannelPoly] = useState(4);
-  const [socketUrl, setSocketUrl] = useState('ws://mr-dev-1227.aarongrisez.com/backend/ws');
+  const [socketUrl, setSocketUrl] = useState('ws://suppadesktop.local/backend/ws');
   const [active, setActive] = useState(false)
   const synths = useRef([]);
 
   const handleReceiveMessage = (message) => {
-    const data = JSON.parse(message.data);
+    const data = JSON.parse(JSON.parse(message.data));
+    console.log(data)
     if (active) {
-      data.forEach((message, index) => {
+      data.notes.forEach(note => {
         const event = new Event((time) => {
-          synths.current[message.channel].triggerAttackRelease(
-            message.note,
-            message.duration,
+          synths.current[data.channel].triggerAttackRelease(
+            note.note,
+            note.duration,
           )
         }).start(Transport.nextSubdivision(message.time));
-        console.log(event)
       })
     }
   }

@@ -12,9 +12,6 @@ from starlette.types import Receive, Send, Scope
 
 from api.extensions.tracing import get_tracer
 
-import logging
-
-logger = logging.getLogger("api")
 
 request_span = contextvars.ContextVar('request_span')
 
