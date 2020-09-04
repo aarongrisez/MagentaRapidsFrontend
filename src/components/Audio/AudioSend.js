@@ -3,7 +3,7 @@ import useWebSocket, { ReadyState } from "react-use-websocket"
 
 
 export const AudioSend = () => {
-  const [socketUrl, setSocketUrl] = useState('ws://suppadesktop.local/backend/ws', { share: true });
+  const [socketUrl, setSocketUrl] = useState('ws://' + process.env.REACT_APP_BACKEND_URL + 'ws', { share: true });
 
   const {
     sendJsonMessage,

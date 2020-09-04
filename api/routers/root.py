@@ -20,7 +20,7 @@ async def websocket_endpoint(websocket: WebSocket, notifier: MessageManager = De
                 logger.debug(f"Received data: {data}")
                 await notifier.push(SynthesizedEvent.parse_obj(data)) 
     except WebSocketDisconnect:
-        notifier.remove(websocket)
+        await notifier.remove(websocket)
 
 @router.post("/backend/push/")
 async def push_to_connected_websockets(events: SynthesizedEvent, notifier: MessageManager = Depends(get_message_manager)):

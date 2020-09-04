@@ -15,7 +15,8 @@ class WebSocketConnectionManager:
         self.connections.append(connection)
         return connection
         
-    def remove_connection(self, connection: WebSocket) -> WebSocket:
+    async def remove_connection(self, connection: WebSocket) -> WebSocket:
+        await connection.close(code=1000)
         self.connections.remove(connection)
         return connection
     

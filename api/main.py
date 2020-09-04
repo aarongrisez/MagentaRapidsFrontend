@@ -13,5 +13,5 @@ app.include_router(root.router)
 @app.on_event("startup")
 async def startup():
     logger.info("Running Startup Initialization")
-    app.add_middleware(OpentracingMiddleware)
+    #app.add_middleware(OpentracingMiddleware)
     app.add_middleware(DebuggingMiddleware)

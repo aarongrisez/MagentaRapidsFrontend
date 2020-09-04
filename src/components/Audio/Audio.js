@@ -5,7 +5,7 @@ import useWebSocket from "react-use-websocket"
 export const Audio = () => {
   const [channels, setChannels] = useState(8);
   const [channelPoly, setChannelPoly] = useState(4);
-  const [socketUrl, setSocketUrl] = useState('ws://suppadesktop.local/backend/ws');
+  const [socketUrl, setSocketUrl] = useState('ws://' + process.env.REACT_APP_BACKEND_URL + 'ws', { share: true });
   const [active, setActive] = useState(false)
   const synths = useRef([]);
 
