@@ -8,7 +8,7 @@ export const Audio = () => {
   // eslint-disable-next-line
   const [channelPoly, setChannelPoly] = useState(4);
   // eslint-disable-next-line
-  const [socketUrl, setSocketUrl] = useState('ws://' + process.env.REACT_APP_BACKEND_URL + 'ws', { share: true });
+  const [socketUrl, setSocketUrl] = useState('wss://' + process.env.REACT_APP_BACKEND_URL + 'ws', { share: true });
   const [active, setActive] = useState(false)
   const synths = useRef([]);
 
