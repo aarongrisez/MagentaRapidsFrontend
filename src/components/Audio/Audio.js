@@ -3,8 +3,11 @@ import { AMSynth, PolySynth, Transport, Master, Event } from 'tone';
 import useWebSocket from "react-use-websocket"
 
 export const Audio = () => {
+  // eslint-disable-next-line
   const [channels, setChannels] = useState(8);
+  // eslint-disable-next-line
   const [channelPoly, setChannelPoly] = useState(4);
+  // eslint-disable-next-line
   const [socketUrl, setSocketUrl] = useState('ws://' + process.env.REACT_APP_BACKEND_URL + 'ws', { share: true });
   const [active, setActive] = useState(false)
   const synths = useRef([]);
@@ -14,6 +17,7 @@ export const Audio = () => {
     console.log(data)
     if (active) {
       data.notes.forEach(note => {
+        // eslint-disable-next-line
         const event = new Event((time) => {
           synths.current[data.channel].triggerAttackRelease(
             note.note,

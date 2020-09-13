@@ -1,40 +1,6 @@
 version: '3'
 services:
 
-  api:
-    build:
-      context: .
-      dockerfile: api.Dockerfile
-    volumes:
-      - .:/src
-      - api-deps:/root/.cache/pypoetry/virtualenvs
-      - pre-commit-api:/pc/api/cache
-    environment:
-      PRE_COMMIT_HOME: /pc/api/cache
-      SERVICE_TAGS: 'traefik.enable=true,traefik.port=80,traefik.docker.network=instrument_web,traefik.http.routers.router-api.rule=Host(`suppadesktop.local`) && PathPrefix(`/backend`)'
-    ports:
-      - 80
-    networks:
-      - instrument_web
-
-  worker:
-    build:
-      context: .
-      dockerfile: api.Dockerfile
-    volumes:
-      - .:/src
-      - api-deps:/root/.cache/pypoetry/virtualenvs
-      - pre-commit-api:/pc/api/cache
-    environment:
-      PRE_COMMIT_HOME: /pc/api/cache
-      SERVICE_TAGS: 'traefik.enable=true,traefik.port=80,traefik.docker.network=instrument_web,traefik.http.routers.router-worker.rule=Host(`suppadesktop.local`) && PathPrefix(`/worker`)'
-    command: ["poetry", "run", "watchmedo", "auto-restart", "-d", ".", "--recursive", "--", "poetry", "run", "python", "worker.py"]
-    working_dir: /src/api
-    networks:
-      - instrument_web
-    depends_on:
-      - api
-  
   client:
     build:
       context: .
@@ -46,6 +12,8 @@ services:
       PRE_COMMIT_HOME: /pc/client/cache     
       SERVICE_TAGS: 'traefik.enable=true,traefik.port=80,traefik.docker.network=instrument_web,traefik.http.routers.router-client.rule=Host(`suppadesktop.local`),traefik.http.routers.router-client.entrypoints=web'
       PORT: 80
+    ports:
+      - 80:80
     stdin_open: true
     networks:
       - instrument_web
