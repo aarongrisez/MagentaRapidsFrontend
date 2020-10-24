@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import { AMSynth, PolySynth, Transport, Master, Event } from 'tone';
 import useWebSocket from "react-use-websocket"
+import { WS_PROTOCOL } from "../../constants"
 
 export const Audio = () => {
   // eslint-disable-next-line
@@ -8,7 +9,7 @@ export const Audio = () => {
   // eslint-disable-next-line
   const [channelPoly, setChannelPoly] = useState(4);
   // eslint-disable-next-line
-  const [socketUrl, setSocketUrl] = useState('wss://' + process.env.REACT_APP_BACKEND_URL + 'ws', { share: true });
+  const [socketUrl, setSocketUrl] = useState(WS_PROTOCOL + process.env.REACT_APP_BACKEND_URL + 'ws', { share: true });
   const [active, setActive] = useState(false)
   const synths = useRef([]);
 

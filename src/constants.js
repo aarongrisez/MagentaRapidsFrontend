@@ -1,0 +1,1 @@
+export const WS_PROTOCOL = process.env.NODE_ENV === "production" ? "wss://" : "ws://"

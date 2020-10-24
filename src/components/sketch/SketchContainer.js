@@ -1,5 +1,4 @@
-import { useRef, useEffect, useState } from "react";
-import React from "react";
+import React, { useRef, useEffect, useState } from "react";
 import p5 from "p5";
 import { Sketch } from "./Sketch"
 
