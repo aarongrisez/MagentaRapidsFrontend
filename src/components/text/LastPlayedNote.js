@@ -1,5 +1,5 @@
-import React, { useCallback, useState } from "react";
-import useWebSocket, { ReadyState } from "react-use-websocket"
+import React, { useState } from "react";
+import useWebSocket from "react-use-websocket"
 import { WS_PROTOCOL } from "../../constants"
 
 
