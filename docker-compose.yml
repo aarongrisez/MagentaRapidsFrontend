@@ -6,6 +6,9 @@ services:
       context: .
     volumes:
       - ./src:/usr/src/app/src
+      - ./public:/usr/src/app/public
+      - ./package.json:/usr/src/app/package.json
+      - ./package-lock.json:/usr/src/app/package-lock.json
     environment:
       PORT: 80
       REACT_APP_BACKEND_URL: localhost:8080/
