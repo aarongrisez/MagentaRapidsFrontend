@@ -1,5 +1,4 @@
 import React, { Fragment } from "react";
-import { SketchContainer } from "../sketch/SketchContainer";
 import { Audio } from "../audio/Audio";
 import { LastPlayedNote } from "../text/LastPlayedNote";
 import BaseLayout from "../layout/BaseLayout";

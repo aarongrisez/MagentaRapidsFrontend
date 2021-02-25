@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import Header from "./Header"
-import { Container, Row, Col } from 'reactstrap';
+import { Container, Row } from 'reactstrap';
 
 const BaseLayout = ({headerProps, chart, audio, latestNote, ...props}) => {
 
