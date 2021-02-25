@@ -1,22 +1,15 @@
-# For more information, please refer to https://aka.ms/vscode-docker-python
-FROM python:3.8-slim-buster
+FROM node:latest
 
-# Keeps Python from generating .pyc files in the container
-ENV PYTHONDONTWRITEBYTECODE 1
+# Create app directory
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
 
-# Turns off buffering for easier container logging
-ENV PYTHONUNBUFFERED 1
+COPY package.json .
+COPY package-lock.json .
 
-# Install pip requirements
-ADD requirements.txt .
-RUN python -m pip install -r requirements.txt
+RUN npm install
 
-WORKDIR /app
-ADD . /app
+COPY . .
+EXPOSE 80
 
-# Switching to a non-root user, please refer to https://aka.ms/vscode-docker-python-user-rights
-RUN useradd appuser && chown -R appuser /app
-USER appuser
-
-# During debugging, this entry point will be overridden. For more information, please refer to https://aka.ms/vscode-docker-python-debug
-CMD ["python", "api/main.py"]
+CMD [ "npm", "start" ]

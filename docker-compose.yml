@@ -4,26 +4,15 @@ services:
   client:
     build:
       context: .
-      dockerfile: client.Dockerfile
     volumes:
       - ./src:/usr/src/app/src
-      - pre-commit-client:/pc/client/cache
+      - ./public:/usr/src/app/public
+      - ./package.json:/usr/src/app/package.json
+      - ./package-lock.json:/usr/src/app/package-lock.json
     environment:
-      PRE_COMMIT_HOME: /pc/client/cache     
-      SERVICE_TAGS: 'traefik.enable=true,traefik.port=80,traefik.docker.network=instrument_web,traefik.http.routers.router-client.rule=Host(`suppadesktop.local`),traefik.http.routers.router-client.entrypoints=web'
       PORT: 80
+      REACT_APP_BACKEND_URL: localhost:8080/
+      NODE_ENV: development
     ports:
       - 80:80
     stdin_open: true
-    networks:
-      - instrument_web
-
-volumes:
-  pre-commit-api:
-  pre-commit-client:
-  api-deps:
-  client-deps:
-
-networks:
-  instrument_web:
-    external: true
